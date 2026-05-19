@@ -1,4 +1,4 @@
-export type PaymentMethod = 'Bank' | 'Wallet';
+export type PaymentMethod = 'Bank' | 'Wallet' | 'UPI' | 'UPI_PHONEPE' | 'UPI_GPAY' | 'UPI_PAYTM' | 'NetBanking' | 'DebitCard' | 'CreditCard';
 export type PaymentStatus = 'Pending' | 'Completed' | 'Failed';
 
 export interface PaymentRequest {

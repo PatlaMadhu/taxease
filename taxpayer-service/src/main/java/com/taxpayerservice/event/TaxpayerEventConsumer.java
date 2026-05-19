@@ -17,7 +17,7 @@ public class TaxpayerEventConsumer {
 
     private final TaxpayerRepository taxpayerRepository;
 
-    @KafkaListener(topics = "taxpayer.registered", groupId = "taxpayer-group")
+    @KafkaListener(topics = "taxpayer.registered", groupId = "taxpayer-group-v2")
     public void onTaxpayerRegistered(TaxpayerRegisteredEvent event) {
         log.info("Received taxpayer.registered event for userId: {}", event.getUserId());
 

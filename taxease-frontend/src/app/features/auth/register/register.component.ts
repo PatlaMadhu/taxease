@@ -39,7 +39,10 @@ export class RegisterComponent {
         this.toast.success(`Registration successful! Your Tax ID: ${res.taxpayerIdNumber}`);
         this.router.navigate(['/auth/login']);
       },
-      error: () => { this.loading = false; }
+      error: (err) => {
+        this.loading = false;
+        this.toast.error(err?.error?.message || 'Registration failed. Please try again.');
+      }
     });
   }
 }

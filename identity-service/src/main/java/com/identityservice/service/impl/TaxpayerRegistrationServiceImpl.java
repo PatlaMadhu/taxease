@@ -36,16 +36,29 @@ public class TaxpayerRegistrationServiceImpl implements TaxpayerRegistrationServ
     private String taxpayerServiceUrl;
 
     @Override
-    @Transactional
     public TaxpayerRegistrationResponseDto registerTaxpayer(TaxpayerRegistrationRequestDto request) {
+        // Step 1: save user + taxpayer in identity DB (committed before REST call)
+        TaxpayerRegisteredEvent event = saveUserAndTaxpayer(request);
+
+        // Step 2: notify taxpayer-service AFTER transaction is committed
+        notifyTaxpayerService(event);
+
+        log.info("Registration successful for email: {}", request.getEmail());
+        return TaxpayerRegistrationResponseDto.builder()
+                .taxpayerIdNumber(event.getUserId())
+                .name(event.getName())
+                .email(event.getEmail())
+                .build();
+    }
+
+    @Transactional
+    public TaxpayerRegisteredEvent saveUserAndTaxpayer(TaxpayerRegistrationRequestDto request) {
         log.info("Processing registration for email: {}", request.getEmail());
 
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already registered: " + request.getEmail());
         }
 
-        // Normalize security answer: trim + lowercase before hashing
-        // This makes the answer case-insensitive (e.g. "Paris" == "paris")
         String normalizedAnswer = request.getSecurityAnswer().trim().toLowerCase();
 
         User user = User.builder()
@@ -71,7 +84,7 @@ public class TaxpayerRegistrationServiceImpl implements TaxpayerRegistrationServ
 
         auditLogService.recordRegistration(savedUser, "TAXPAYER_REGISTER", "auth/register");
 
-        TaxpayerRegisteredEvent event = TaxpayerRegisteredEvent.builder()
+        return TaxpayerRegisteredEvent.builder()
                 .userId(savedUser.getId())
                 .name(savedUser.getName())
                 .email(savedUser.getEmail())
@@ -80,25 +93,19 @@ public class TaxpayerRegistrationServiceImpl implements TaxpayerRegistrationServ
                 .address(request.getAddress())
                 .contactInfo(request.getContactInfo())
                 .build();
+    }
 
-        // Direct REST call to taxpayer-service (reliable)
+    private void notifyTaxpayerService(TaxpayerRegisteredEvent event) {
         try {
             restTemplate.postForObject(
                     taxpayerServiceUrl + "/api/taxpayers/internal/create",
                     event, Object.class);
-            log.info("Taxpayer profile created via REST for userId: {}", savedUser.getId());
+            log.info("Taxpayer profile created via REST for userId: {}", event.getUserId());
         } catch (Exception e) {
             log.warn("REST call to taxpayer-service failed, falling back to Kafka: {}", e.getMessage());
             try { eventPublisher.publishTaxpayerRegistered(event); } catch (Exception ke) {
                 log.error("Kafka publish also failed: {}", ke.getMessage());
             }
         }
-
-        log.info("Registration successful for email: {}", request.getEmail());
-        return TaxpayerRegistrationResponseDto.builder()
-                .taxpayerIdNumber(savedUser.getId())
-                .name(savedUser.getName())
-                .email(savedUser.getEmail())
-                .build();
     }
 }

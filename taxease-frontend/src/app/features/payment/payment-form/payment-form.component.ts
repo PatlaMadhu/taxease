@@ -17,7 +17,7 @@ export class PaymentFormComponent implements OnInit {
   loading = false;
   filingId!: number;
   taxpayerId!: number;
-  methods: PaymentMethod[] = ['Bank', 'Wallet'];
+  methods: PaymentMethod[] = ['Bank', 'Wallet', 'UPI', 'UPI_PHONEPE', 'UPI_GPAY', 'UPI_PAYTM', 'NetBanking', 'DebitCard', 'CreditCard'];
 
   constructor(
     private fb: FormBuilder,
