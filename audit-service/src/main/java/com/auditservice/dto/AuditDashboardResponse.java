@@ -1,0 +1,14 @@
+package com.auditservice.dto;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class AuditDashboardResponse {
+    private long totalAudits;
+    private long openAudits;
+    private long closedAudits;
+    private long escalatedAudits;
+    private long nonComplianceFilings;
+}

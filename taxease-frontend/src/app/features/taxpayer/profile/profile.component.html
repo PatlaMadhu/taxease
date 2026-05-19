@@ -1,0 +1,74 @@
+<div class="page-container" *ngIf="!loading && profile && !error; else loadingOrError">
+  <div class="page-header">
+    <div>
+      <h2>My Profile</h2>
+      <p class="subtitle">View and update your taxpayer information</p>
+    </div>
+    <button mat-raised-button [color]="editMode ? 'warn' : 'primary'" (click)="editMode = !editMode">
+      <mat-icon>{{ editMode ? 'close' : 'edit' }}</mat-icon> {{ editMode ? 'Cancel' : 'Edit Profile' }}
+    </button>
+  </div>
+
+  <div class="profile-grid">
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="avatar">account_circle</mat-icon>
+        <mat-card-title>{{ profile.name }}</mat-card-title>
+        <mat-card-subtitle>{{ profile.email }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-row"><span>Tax ID Number</span><strong>{{ profile.taxpayerIdNumber || profile.taxpayerId }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="info-row"><span>PAN Number</span><strong>{{ profile.panNumber || '—' }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="info-row"><span>Phone</span><strong>{{ profile.phone || '—' }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="info-row"><span>Taxpayer Type</span><strong>{{ profile.type }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="info-row"><span>Registered On</span><strong>{{ profile.createdAt | date:'mediumDate' }}</strong></div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header><mat-card-title>Contact Information</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <div *ngIf="!editMode">
+          <div class="info-row"><span>Address</span><strong>{{ profile.address || '—' }}</strong></div>
+          <mat-divider></mat-divider>
+          <div class="info-row"><span>Contact Info</span><strong>{{ profile.contactInfo || '—' }}</strong></div>
+        </div>
+
+        <form *ngIf="editMode" [formGroup]="form" (ngSubmit)="save()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>PAN Number</mat-label>
+            <input matInput formControlName="panNumber" placeholder="ABCDE1234F">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Address</mat-label>
+            <textarea matInput formControlName="address" rows="2"></textarea>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Contact Info</mat-label>
+            <input matInput formControlName="contactInfo">
+          </mat-form-field>
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="editMode=false">Cancel</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="saving">
+              <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+              <span *ngIf="!saving">Save Changes</span>
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #loadingOrError>
+  <div class="spinner-center" *ngIf="loading"><mat-spinner></mat-spinner></div>
+  <div class="error-state" *ngIf="!loading && error">
+    <mat-icon color="warn">error_outline</mat-icon>
+    <p>Failed to load profile. Please refresh the page.</p>
+    <button mat-raised-button color="primary" (click)="reload()">Retry</button>
+  </div>
+</ng-template>

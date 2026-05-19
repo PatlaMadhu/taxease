@@ -1,0 +1,86 @@
+<div class="page-container" *ngIf="!loading && !error; else stateTemplate">
+  <div class="page-header">
+    <div>
+      <h2>Welcome back, {{ profile?.name }}</h2>
+      <p class="subtitle">Tax ID: {{ profile?.taxpayerIdNumber || profile?.taxpayerId }} &nbsp;|&nbsp; Type: {{ profile?.type }}</p>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <app-dashboard-card label="Total Filings"    [value]="totalFiled"      icon="description"  color="blue"></app-dashboard-card>
+    <app-dashboard-card label="Pending Filings"  [value]="pendingFilings"  icon="pending"       color="orange"></app-dashboard-card>
+    <app-dashboard-card label="Approved Filings" [value]="approvedFilings" icon="check_circle"  color="green"></app-dashboard-card>
+    <app-dashboard-card label="Total Paid (₹)"   [value]="(totalPaid) | number:'1.2-2'" icon="payments" color="purple"></app-dashboard-card>
+  </div>
+
+  <div class="section-grid">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Recent Filings</mat-card-title>
+        <span class="spacer"></span>
+        <a mat-button color="primary" routerLink="/tax-filing">View All</a>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="filings.slice(0,5)" class="full-table">
+          <ng-container matColumnDef="period">
+            <th mat-header-cell *matHeaderCellDef>Period</th>
+            <td mat-cell *matCellDef="let f">{{ f.period }}</td>
+          </ng-container>
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount (₹)</th>
+            <td mat-cell *matCellDef="let f">{{ f.amountDeclared | number:'1.2-2' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let f">
+              <span class="status-badge" [ngClass]="'status-' + f.status.toLowerCase()">{{ f.status }}</span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="['period','amount','status']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['period','amount','status']"></tr>
+        </table>
+        <p *ngIf="filings.length === 0" class="empty-msg" style="padding:20px 0;text-align:center;color:var(--text-muted)">
+          No filings yet. <a routerLink="/tax-filing/new" style="color:var(--r-fuchsia)">File now</a>
+        </p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Recent Payments</mat-card-title>
+        <span class="spacer"></span>
+        <a mat-button color="primary" routerLink="/payment">View All</a>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="payments.slice(0,5)" class="full-table">
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount (₹)</th>
+            <td mat-cell *matCellDef="let p">{{ p.amount | number:'1.2-2' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="method">
+            <th mat-header-cell *matHeaderCellDef>Method</th>
+            <td mat-cell *matCellDef="let p">{{ p.method }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let p">
+              <span class="status-badge" [ngClass]="'status-' + p.status.toLowerCase()">{{ p.status }}</span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="['amount','method','status']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['amount','method','status']"></tr>
+        </table>
+        <p *ngIf="payments.length === 0" class="empty-msg" style="padding:20px 0;text-align:center;color:var(--text-muted)">No payments yet.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #stateTemplate>
+  <div *ngIf="loading" class="spinner-center"><mat-spinner></mat-spinner></div>
+  <div *ngIf="!loading && error" class="error-state">
+    <mat-icon>warning</mat-icon>
+    <p>Could not load your profile. Please ensure your account is fully set up.</p>
+    <button mat-raised-button color="primary" (click)="load()">Retry</button>
+  </div>
+</ng-template>

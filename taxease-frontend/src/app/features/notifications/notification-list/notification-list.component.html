@@ -1,0 +1,41 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h2>Notifications</h2>
+      <p class="subtitle">{{ unreadCount }} unread notification{{ unreadCount !== 1 ? 's' : '' }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="spinner-center"><mat-spinner></mat-spinner></div>
+
+  <div *ngIf="error && !loading" class="error-state">
+    <mat-icon color="warn">error_outline</mat-icon>
+    <p>Failed to load notifications.</p>
+    <button mat-raised-button color="primary" (click)="load()">Retry</button>
+  </div>
+
+  <div *ngIf="!loading && !error">
+    <div *ngIf="notifications.length === 0" class="empty-state">
+      <mat-icon>notifications_none</mat-icon>
+      <p>No notifications yet.</p>
+    </div>
+
+    <mat-card *ngFor="let n of notifications" class="notif-card" [class.unread]="n.status === 'UNREAD'" (click)="markRead(n)">
+      <mat-card-content>
+        <div class="notif-row">
+          <div class="notif-icon" [class.unread-icon]="n.status === 'UNREAD'">
+            <mat-icon>{{ n.status === 'READ' ? 'notifications' : 'notifications_active' }}</mat-icon>
+          </div>
+          <div class="notif-body">
+            <p class="notif-message">{{ n.message }}</p>
+            <div class="notif-meta">
+              <mat-chip class="category-chip">{{ n.category }}</mat-chip>
+              <span class="notif-date">{{ n.createdDate | date:'medium' }}</span>
+            </div>
+          </div>
+          <mat-chip *ngIf="n.status === 'UNREAD'" class="unread-badge">New</mat-chip>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="page-container" *ngIf="!loading && filing; else stateTemplate">
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:8px">
+      <button mat-icon-button routerLink="/tax-filing"><mat-icon>arrow_back</mat-icon></button>
+      <div>
+        <h2>Filing #{{ filing.filingId }}</h2>
+        <p class="subtitle">Period: {{ filing.period }}</p>
+      </div>
+    </div>
+    <span class="status-badge" [ngClass]="'status-' + filing.status.toLowerCase()">{{ filing.status }}</span>
+  </div>
+
+  <div class="detail-grid">
+    <mat-card>
+      <mat-card-header><mat-card-title>Filing Details</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <div class="detail-row"><span>Taxpayer ID</span><strong>{{ filing.taxpayerId }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="detail-row"><span>Email</span><strong>{{ filing.taxpayerEmail }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="detail-row"><span>Amount Declared</span><strong>₹{{ filing.amountDeclared | number:'1.2-2' }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="detail-row"><span>Submitted Date</span><strong>{{ filing.submittedDate ? (filing.submittedDate | date:'medium') : 'Not submitted' }}</strong></div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header><mat-card-title>Attached Documents</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <div *ngIf="documents.length === 0" class="empty-state" style="padding:32px 0">
+          <mat-icon>attach_file</mat-icon>
+          <p>No documents attached.</p>
+        </div>
+        <mat-list>
+          <mat-list-item *ngFor="let doc of documents">
+            <mat-icon matListItemIcon>attach_file</mat-icon>
+            <span matListItemTitle>{{ doc.docType }}</span>
+            <span matListItemLine>
+              <span class="status-badge" [ngClass]="'status-' + doc.verificationStatus.toLowerCase()">{{ doc.verificationStatus }}</span>
+            </span>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #stateTemplate>
+  <div *ngIf="loading" class="spinner-center"><mat-spinner></mat-spinner></div>
+  <div *ngIf="!loading && !filing" class="error-state">
+    <mat-icon color="warn">error_outline</mat-icon>
+    <p>Filing not found.</p>
+    <button mat-raised-button routerLink="/tax-filing">Back to Filings</button>
+  </div>
+</ng-template>

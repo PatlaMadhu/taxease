@@ -1,0 +1,38 @@
+<div class="sidebar">
+  <!-- Logo -->
+  <div class="sidebar-header">
+    <div class="logo-mark"><mat-icon>account_balance</mat-icon></div>
+    <div class="logo-text">
+      <span class="logo-name">TaxEase</span>
+      <span class="logo-sub">Revenue Management</span>
+    </div>
+  </div>
+
+  <!-- User card -->
+  <div class="user-card">
+    <div class="avatar-wrap"><mat-icon>person</mat-icon></div>
+    <div class="user-meta">
+      <div class="user-email">{{ auth.getEmail() }}</div>
+      <div class="role-pill">{{ auth.getRole() }}</div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav-section">
+    <button class="nav-item"
+       *ngFor="let item of visibleItems"
+       [class.active]="isActive(item.route)"
+       (click)="navigate(item.route)">
+      <div class="nav-icon"><mat-icon>{{ item.icon }}</mat-icon></div>
+      <span>{{ item.label }}</span>
+    </button>
+  </nav>
+
+  <!-- Footer logout -->
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()">
+      <div class="nav-icon"><mat-icon>logout</mat-icon></div>
+      <span>Sign Out</span>
+    </button>
+  </div>
+</div>

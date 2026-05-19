@@ -1,0 +1,62 @@
+<div class="topbar">
+  <button mat-icon-button class="menu-btn" (click)="menuToggle.emit()" matTooltip="Toggle menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <div class="breadcrumb">
+    <mat-icon class="bc-icon">navigate_next</mat-icon>
+    <span class="bc-text">{{ pageTitle }}</span>
+  </div>
+
+  <span class="spacer"></span>
+
+  <div class="topbar-actions">
+    <!-- Theme toggle -->
+    <button mat-icon-button class="action-btn theme-btn" (click)="theme.toggle()"
+            [matTooltip]="theme.isDark ? 'Light Mode' : 'Dark Mode'">
+      <mat-icon>{{ theme.isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+
+    <!-- Notifications -->
+    <button mat-icon-button class="action-btn" [matMenuTriggerFor]="notifMenu"
+            [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" matBadgeColor="warn"
+            matTooltip="Notifications">
+      <mat-icon>notifications_none</mat-icon>
+    </button>
+
+    <mat-menu #notifMenu="matMenu" class="notif-panel" xPosition="before">
+      <div class="notif-header" (click)="$event.stopPropagation()">
+        <span class="notif-title">Notifications</span>
+        <span *ngIf="unreadCount > 0" class="notif-badge">{{ unreadCount }}</span>
+      </div>
+      <div *ngIf="notifications.length === 0" class="notif-empty" (click)="$event.stopPropagation()">
+        <mat-icon>notifications_none</mat-icon>
+        <span>No unread notifications</span>
+      </div>
+      <button mat-menu-item *ngFor="let n of notifications" class="notif-item">
+        <mat-icon>info_outline</mat-icon>
+        <span class="notif-msg">{{ n.message }}</span>
+      </button>
+    </mat-menu>
+
+    <!-- User menu -->
+    <button class="user-avatar-btn" [matMenuTriggerFor]="userMenu">
+      <div class="avatar-circle"><mat-icon>person</mat-icon></div>
+      <span class="user-role-chip">{{ auth.getRole() }}</span>
+      <mat-icon class="dropdown-arrow">expand_more</mat-icon>
+    </button>
+
+    <mat-menu #userMenu="matMenu" xPosition="before">
+      <button mat-menu-item routerLink="/taxpayer/profile" *ngIf="auth.hasRole('TAXPAYER')">
+        <mat-icon>manage_accounts</mat-icon> My Profile
+      </button>
+      <button mat-menu-item routerLink="/notifications">
+        <mat-icon>notifications</mat-icon> Notifications
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="auth.logout()" style="color:var(--danger)">
+        <mat-icon style="color:var(--danger)">logout</mat-icon> Sign Out
+      </button>
+    </mat-menu>
+  </div>
+</div>

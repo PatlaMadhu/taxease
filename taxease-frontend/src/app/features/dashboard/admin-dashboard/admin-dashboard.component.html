@@ -1,0 +1,57 @@
+<div class="page-container" *ngIf="!loading; else spinner">
+  <div class="page-header">
+    <div>
+      <h2>Admin / Manager Dashboard</h2>
+      <p class="subtitle">System-wide analytics and revenue overview</p>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <app-dashboard-card label="Total Revenue (₹)"      [value]="(revenue?.totalRevenue || 0) | number:'1.2-2'"      icon="account_balance_wallet" color="blue"></app-dashboard-card>
+    <app-dashboard-card label="Successful Revenue (₹)" [value]="(revenue?.successfulRevenue || 0) | number:'1.2-2'" icon="trending_up"            color="green"></app-dashboard-card>
+    <app-dashboard-card label="Total Transactions"     [value]="metrics?.totalTransactions || 0"                    icon="receipt_long"           color="purple"></app-dashboard-card>
+    <app-dashboard-card label="Total Audits"           [value]="auditDash?.totalAudits || 0"                        icon="gavel"                  color="orange"></app-dashboard-card>
+  </div>
+
+  <div class="charts-grid" style="margin-bottom:24px">
+    <mat-card class="chart-card">
+      <mat-card-header><mat-card-title>Revenue Breakdown</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <canvas baseChart [data]="revenueChartData" type="doughnut" [options]="{ responsive: true, plugins: { legend: { position: 'bottom' } } }"></canvas>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <mat-card-header><mat-card-title>Audit Status Overview</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <canvas baseChart [data]="auditChartData" type="pie" [options]="{ responsive: true, plugins: { legend: { position: 'bottom' } } }"></canvas>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header><mat-card-title>Payment Metrics</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <div class="stat-row"><span>Successful Transactions</span><strong style="color:var(--success)">{{ metrics?.successfulTransactions }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="stat-row"><span>Failed Transactions</span><strong style="color:var(--danger)">{{ metrics?.failedTransactions }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="stat-row"><span>Total Transactions</span><strong>{{ metrics?.totalTransactions }}</strong></div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header><mat-card-title>Audit Summary</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <div class="stat-row"><span>Open Audits</span><strong style="color:var(--warning)">{{ auditDash?.openAudits }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="stat-row"><span>Closed Audits</span><strong style="color:var(--success)">{{ auditDash?.closedAudits }}</strong></div>
+        <mat-divider></mat-divider>
+        <div class="stat-row"><span>Non-Compliance</span><strong style="color:var(--danger)">{{ auditDash?.nonComplianceFilings }}</strong></div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #spinner>
+  <div class="spinner-center"><mat-spinner></mat-spinner></div>
+</ng-template>

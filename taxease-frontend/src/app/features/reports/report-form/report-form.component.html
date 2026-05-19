@@ -1,0 +1,42 @@
+<div class="page-container">
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:8px">
+      <button mat-icon-button routerLink="/reports"><mat-icon>arrow_back</mat-icon></button>
+      <div>
+        <h2>Generate Report</h2>
+        <p class="subtitle">Create a new system report</p>
+      </div>
+    </div>
+  </div>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Report Title</mat-label>
+          <input matInput formControlName="title" placeholder="e.g. Q1 Revenue Summary">
+          <mat-error *ngIf="form.get('title')?.hasError('required')">Title is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Scope</mat-label>
+          <mat-select formControlName="scope">
+            <mat-option *ngFor="let s of scopes" [value]="s">{{ s }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('scope')?.hasError('required')">Scope is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Metrics / Description</mat-label>
+          <textarea matInput formControlName="metrics" rows="3" placeholder="e.g. totalRevenue, filingCount, complianceRate"></textarea>
+          <mat-error *ngIf="form.get('metrics')?.hasError('required')">Metrics is required</mat-error>
+        </mat-form-field>
+        <div class="form-actions">
+          <button mat-stroked-button type="button" routerLink="/reports">Cancel</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+            <mat-spinner *ngIf="loading" diameter="18"></mat-spinner>
+            <span *ngIf="!loading">Generate</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

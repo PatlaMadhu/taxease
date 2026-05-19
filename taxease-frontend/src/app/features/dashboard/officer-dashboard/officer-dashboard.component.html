@@ -1,0 +1,75 @@
+<div class="dashboard-page" *ngIf="!loading; else spinner">
+  <div class="page-header">
+    <h2>Officer Dashboard</h2>
+    <p class="subtitle">Review filings, manage audits and compliance</p>
+  </div>
+
+  <div class="cards-grid">
+    <app-dashboard-card label="Pending Filings"   [value]="pendingFilings.length"  icon="pending_actions" color="orange"></app-dashboard-card>
+    <app-dashboard-card label="Open Audits"       [value]="openAudits.length"      icon="gavel"           color="red"></app-dashboard-card>
+    <app-dashboard-card label="Successful Txns"   [value]="metrics?.successfulTransactions || 0" icon="check_circle" color="green"></app-dashboard-card>
+    <app-dashboard-card label="Failed Txns"       [value]="metrics?.failedTransactions || 0"     icon="cancel"       color="red"></app-dashboard-card>
+  </div>
+
+  <div class="section-grid">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Pending Filings</mat-card-title>
+        <span class="spacer"></span>
+        <a mat-button color="primary" routerLink="/tax-filing">Manage</a>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="pendingFilings.slice(0,6)" class="full-table">
+          <ng-container matColumnDef="taxpayerId">
+            <th mat-header-cell *matHeaderCellDef>Taxpayer ID</th>
+            <td mat-cell *matCellDef="let f">{{ f.taxpayerId }}</td>
+          </ng-container>
+          <ng-container matColumnDef="period">
+            <th mat-header-cell *matHeaderCellDef>Period</th>
+            <td mat-cell *matCellDef="let f">{{ f.period }}</td>
+          </ng-container>
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount (₹)</th>
+            <td mat-cell *matCellDef="let f">{{ f.amountDeclared | number:'1.2-2' }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="['taxpayerId','period','amount']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['taxpayerId','period','amount']"></tr>
+        </table>
+        <p *ngIf="pendingFilings.length === 0" class="empty-msg">No pending filings.</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Open Audit Cases</mat-card-title>
+        <span class="spacer"></span>
+        <a mat-button color="primary" routerLink="/audit">Manage</a>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="openAudits.slice(0,6)" class="full-table">
+          <ng-container matColumnDef="auditId">
+            <th mat-header-cell *matHeaderCellDef>Audit ID</th>
+            <td mat-cell *matCellDef="let a">{{ a.auditId }}</td>
+          </ng-container>
+          <ng-container matColumnDef="scope">
+            <th mat-header-cell *matHeaderCellDef>Scope</th>
+            <td mat-cell *matCellDef="let a">{{ a.scope }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let a">
+              <mat-chip [ngClass]="'status-' + a.status.toLowerCase()">{{ a.status }}</mat-chip>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="['auditId','scope','status']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['auditId','scope','status']"></tr>
+        </table>
+        <p *ngIf="openAudits.length === 0" class="empty-msg">No open audits.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #spinner>
+  <div class="spinner-center"><mat-spinner></mat-spinner></div>
+</ng-template>

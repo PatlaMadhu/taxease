@@ -1,0 +1,97 @@
+<div class="auth-bg">
+  <div class="auth-layout">
+
+    <!-- Left decorative panel -->
+    <div class="auth-panel">
+      <div class="panel-logo">
+        <div class="logo-mark"><mat-icon>account_balance</mat-icon></div>
+        <div class="app-name">TaxEase</div>
+        <div class="app-tagline">Public Tax Filing &amp;<br>Revenue Management System</div>
+      </div>
+      <div class="panel-features">
+        <div class="feature-item">
+          <div class="feat-icon"><mat-icon>security</mat-icon></div>
+          <div class="feat-text">
+            <div class="feat-title">Secure &amp; Compliant</div>
+            <div class="feat-desc">JWT-based authentication with role-based access</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feat-icon"><mat-icon>description</mat-icon></div>
+          <div class="feat-text">
+            <div class="feat-title">Smart Tax Filing</div>
+            <div class="feat-desc">File taxes with real-time validation and tracking</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feat-icon"><mat-icon>analytics</mat-icon></div>
+          <div class="feat-text">
+            <div class="feat-title">Revenue Analytics</div>
+            <div class="feat-desc">Rich dashboards for all government roles</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feat-icon"><mat-icon>gavel</mat-icon></div>
+          <div class="feat-text">
+            <div class="feat-title">Audit &amp; Compliance</div>
+            <div class="feat-desc">Full audit trail and compliance management</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">© 2025 TaxEase Government Portal</div>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="auth-form-panel">
+      <div class="auth-form-header">
+        <h1>Welcome back</h1>
+        <p>Sign in to your TaxEase account</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="you@example.com" autocomplete="email">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="form.get('email')?.hasError('email')">Enter a valid email</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" autocomplete="current-password">
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword" [matTooltip]="hidePassword ? 'Show password' : 'Hide password'">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="form.get('password')?.hasError('required')">Password is required</mat-error>
+        </mat-form-field>
+
+        <div *ngIf="errorMsg" class="form-error">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ errorMsg }}</span>
+        </div>
+
+        <button class="btn-submit mat-mdc-raised-button" type="submit" [disabled]="loading">
+          <mat-spinner *ngIf="loading" diameter="20" style="display:inline-block"></mat-spinner>
+          <mat-icon *ngIf="!loading">login</mat-icon>
+          <span>{{ loading ? 'Signing in…' : 'Sign In' }}</span>
+        </button>
+      </form>
+
+      <div class="auth-links">
+        <span>New taxpayer? <a routerLink="/auth/register">Create account</a></span>
+        <a routerLink="/auth/forgot-password">Forgot password?</a>
+      </div>
+
+      <!-- Role hints -->
+      <div class="form-divider" style="margin-top:24px"><span>Available Roles</span></div>
+      <div class="role-hint-grid">
+        <div class="role-hint"><div class="role-name">Taxpayer</div><div class="role-desc">File &amp; pay taxes</div></div>
+        <div class="role-hint"><div class="role-name">Tax Officer</div><div class="role-desc">Review filings</div></div>
+        <div class="role-hint"><div class="role-name">Administrator</div><div class="role-desc">Full system access</div></div>
+        <div class="role-hint"><div class="role-name">Auditor</div><div class="role-desc">Audit &amp; compliance</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>

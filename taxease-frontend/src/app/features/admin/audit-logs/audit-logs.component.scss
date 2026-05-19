@@ -1,0 +1,8 @@
+.feature-page { padding: 28px 32px; animation: fadeInUp 0.4s ease both; }
+.page-header { margin-bottom: 24px; h2 { font-family: "Syne", sans-serif; font-size: 24px; font-weight: 800; color: var(--text-primary); } .subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; } }
+.action-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
+.full-table { width: 100%; }
+.empty-msg { color: var(--text-muted); font-size: 14px; padding: 32px 0; text-align: center; }
+.spinner-center { display: flex; justify-content: center; align-items: center; min-height: 200px; }
+.form-card { max-width: 640px; }
+@media (max-width: 600px) { .feature-page { padding: 16px; } }

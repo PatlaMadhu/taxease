@@ -1,0 +1,67 @@
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h2>Admin Panel</h2>
+      <p class="subtitle">System administration and notification management</p>
+    </div>
+  </div>
+
+  <div class="admin-grid">
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>campaign</mat-icon>
+        <mat-card-title>Broadcast Notification</mat-card-title>
+        <mat-card-subtitle>Send a message to all users</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="broadcastForm" (ngSubmit)="sendBroadcast()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Message</mat-label>
+            <textarea matInput formControlName="message" rows="3" placeholder="Enter broadcast message…"></textarea>
+            <mat-error *ngIf="broadcastForm.get('message')?.hasError('required')">Message is required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="category">
+              <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-raised-button color="primary" type="submit" [disabled]="sending" class="full-width">
+            <mat-icon>send</mat-icon> Send Broadcast
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>person</mat-icon>
+        <mat-card-title>Direct Notification</mat-card-title>
+        <mat-card-subtitle>Send a message to a specific user</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="directForm" (ngSubmit)="sendDirect()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>User ID</mat-label>
+            <input matInput formControlName="userId" type="number">
+            <mat-error *ngIf="directForm.get('userId')?.hasError('required')">User ID is required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Message</mat-label>
+            <textarea matInput formControlName="message" rows="3" placeholder="Enter message…"></textarea>
+            <mat-error *ngIf="directForm.get('message')?.hasError('required')">Message is required</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="category">
+              <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-raised-button color="accent" type="submit" [disabled]="sending" class="full-width">
+            <mat-icon>send</mat-icon> Send to User
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

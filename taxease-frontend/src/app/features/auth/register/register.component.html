@@ -1,0 +1,122 @@
+<div class="auth-bg">
+  <div class="auth-layout">
+
+    <div class="auth-panel">
+      <div class="panel-logo">
+        <div class="logo-mark"><mat-icon>account_balance</mat-icon></div>
+        <div class="app-name">TaxEase</div>
+        <div class="app-tagline">Create your taxpayer account<br>and get started in minutes</div>
+      </div>
+      <div class="panel-features">
+        <div class="feature-item">
+          <div class="feat-icon"><mat-icon>person_add</mat-icon></div>
+          <div class="feat-text">
+            <div class="feat-title">Free Registration</div>
+            <div class="feat-desc">Open to all citizens and businesses</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feat-icon"><mat-icon>verified_user</mat-icon></div>
+          <div class="feat-text">
+            <div class="feat-title">Secure Account</div>
+            <div class="feat-desc">Password &amp; security question protection</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feat-icon"><mat-icon>receipt_long</mat-icon></div>
+          <div class="feat-text">
+            <div class="feat-title">Tax ID Assigned</div>
+            <div class="feat-desc">Unique taxpayer ID generated instantly</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">© 2025 TaxEase Government Portal</div>
+    </div>
+
+    <div class="auth-form-panel">
+      <div class="auth-form-header">
+        <h1>Create Account</h1>
+        <p>Register as a new taxpayer — Citizens &amp; Businesses</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Full Name</mat-label>
+          <input matInput formControlName="name" placeholder="Your legal name">
+          <mat-icon matSuffix>badge</mat-icon>
+          <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+          <mat-error *ngIf="form.get('name')?.hasError('minlength')">Minimum 2 characters</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="you@example.com">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="form.get('email')?.hasError('email')">Valid email required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Phone Number</mat-label>
+          <input matInput formControlName="phone" placeholder="+91XXXXXXXXXX">
+          <mat-icon matSuffix>phone</mat-icon>
+          <mat-error *ngIf="form.get('phone')?.hasError('required')">Phone is required</mat-error>
+          <mat-error *ngIf="form.get('phone')?.hasError('pattern')">10–15 digit number required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-hint>Minimum 8 characters</mat-hint>
+          <mat-error *ngIf="form.get('password')?.hasError('required')">Password is required</mat-error>
+          <mat-error *ngIf="form.get('password')?.hasError('minlength')">Minimum 8 characters</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Taxpayer Type</mat-label>
+          <mat-select formControlName="taxpayerType">
+            <mat-option *ngFor="let t of taxpayerTypes" [value]="t">{{ t }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('taxpayerType')?.hasError('required')">Select a type</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Address</mat-label>
+          <textarea matInput formControlName="address" rows="2" placeholder="Your registered address"></textarea>
+          <mat-error *ngIf="form.get('address')?.hasError('required')">Address is required</mat-error>
+        </mat-form-field>
+
+        <!-- Security Question -->
+        <div class="security-question-box">
+          <div class="sq-label"><mat-icon>shield</mat-icon> Security Question</div>
+          <div class="sq-question">What is your favorite place?</div>
+        </div>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Your Answer</mat-label>
+          <input matInput formControlName="securityAnswer" [type]="hideSecurityAnswer ? 'password' : 'text'" placeholder="e.g. Paris, Chennai, My hometown…">
+          <button mat-icon-button matSuffix type="button" (click)="hideSecurityAnswer = !hideSecurityAnswer">
+            <mat-icon>{{ hideSecurityAnswer ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-hint>Used to verify identity if you forget your password</mat-hint>
+          <mat-error *ngIf="form.get('securityAnswer')?.hasError('required')">Answer is required</mat-error>
+          <mat-error *ngIf="form.get('securityAnswer')?.hasError('minlength')">Answer too short</mat-error>
+        </mat-form-field>
+
+        <button class="btn-submit mat-mdc-raised-button" type="submit" [disabled]="loading">
+          <mat-spinner *ngIf="loading" diameter="20" style="display:inline-block"></mat-spinner>
+          <mat-icon *ngIf="!loading">how_to_reg</mat-icon>
+          <span>{{ loading ? 'Creating Account…' : 'Create Account' }}</span>
+        </button>
+      </form>
+
+      <div class="auth-links">
+        <span>Already registered? <a routerLink="/auth/login">Sign in</a></span>
+      </div>
+    </div>
+
+  </div>
+</div>
