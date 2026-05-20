@@ -38,20 +38,21 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationResponse> getNotificationsByUser(Long userId) {
-        return notificationRepository.findByUserIdOrderByCreatedDateDesc(userId)
+        return notificationRepository.findByUserIdInOrderByCreatedDateDesc(List.of(userId, 0L))
                 .stream().map(this::toResponse).toList();
     }
 
     @Override
     public List<NotificationResponse> getUnreadByUser(Long userId) {
-        return notificationRepository.findByUserIdAndStatus(userId, NotificationStatus.UNREAD)
+        return notificationRepository.findByUserIdInAndStatus(List.of(userId, 0L), NotificationStatus.UNREAD)
                 .stream().map(this::toResponse).toList();
     }
 
     @Override
     @Transactional
     public NotificationResponse markAsRead(Long notificationId, Long userId) {
-        Notification notification = notificationRepository.findByIdAndUserId(notificationId, userId)
+        Notification notification = notificationRepository.findById(notificationId)
+                .filter(n -> n.getUserId().equals(userId) || n.getUserId().equals(0L))
                 .orElseThrow(() -> new NoSuchElementException(
                         "Notification not found or does not belong to user: " + userId));
         if (notification.getStatus() == NotificationStatus.READ) {
@@ -65,10 +66,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void broadcastNotification(String message, NotificationCategory category) {
         log.info("Broadcasting notification to all users, category: {}", category);
-        // Broadcast creates a single global notification record
-        // In a microservice context, broadcast is stored as a system-wide notification
         Notification notification = Notification.builder()
-                .userId(0L) // 0 = broadcast / all users
+                .userId(0L) // 0L = broadcast sentinel — visible to ALL users
                 .message(message)
                 .category(category != null ? category : NotificationCategory.BROADCAST)
                 .status(NotificationStatus.UNREAD)
@@ -80,11 +79,43 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void sendNotificationToUser(Long userId, String message, NotificationCategory category) {
-        log.info("Sending direct notification to userId: {}", userId);
+        log.info("Sending notification to userId: {}", userId);
         Notification notification = Notification.builder()
                 .userId(userId)
                 .message(message)
                 .category(category != null ? category : NotificationCategory.SYSTEM_UPDATE)
+                .status(NotificationStatus.UNREAD)
+                .build();
+        notificationRepository.save(notification);
+    }
+
+    @Override
+    public List<NotificationResponse> getByCategory(Long userId, NotificationCategory category) {
+        return notificationRepository.findByUserIdInAndCategoryOrderByCreatedDateDesc(List.of(userId, 0L), category)
+                .stream().map(this::toResponse).toList();
+    }
+
+    @Override
+    @Transactional
+    public void sendDeadlineAlert(Long userId, String period, String deadlineDate) {
+        log.info("Sending deadline alert to userId: {} for period: {}", userId, period);
+        Notification notification = Notification.builder()
+                .userId(userId)
+                .message("Reminder: Your tax filing for period " + period + " is due on " + deadlineDate + ". Please submit before the deadline.")
+                .category(NotificationCategory.DEADLINE_ALERT)
+                .status(NotificationStatus.UNREAD)
+                .build();
+        notificationRepository.save(notification);
+    }
+
+    @Override
+    @Transactional
+    public void broadcastProgramUpdate(String title, String details) {
+        log.info("Broadcasting program update: {}", title);
+        Notification notification = Notification.builder()
+                .userId(0L)
+                .message(title + ": " + details)
+                .category(NotificationCategory.PROGRAM_UPDATE)
                 .status(NotificationStatus.UNREAD)
                 .build();
         notificationRepository.save(notification);

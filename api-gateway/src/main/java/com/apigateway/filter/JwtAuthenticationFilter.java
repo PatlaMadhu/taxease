@@ -62,8 +62,17 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
             String email = claims.getSubject();
             String role = claims.get("role", String.class);
+            Object userIdClaim = claims.get("userId");
+            String userId = "";
+            if (userIdClaim instanceof Integer) {
+                userId = String.valueOf(((Integer) userIdClaim).longValue());
+            } else if (userIdClaim instanceof Long) {
+                userId = String.valueOf(userIdClaim);
+            } else if (userIdClaim != null) {
+                userId = String.valueOf(((Number) userIdClaim).longValue());
+            }
 
-            log.debug("JWT valid for email: {}, role: {}", email, role);
+            log.debug("JWT valid for email: {}, role: {}, userId: {}", email, role, userId);
 
             String correlationId = exchange.getRequest().getHeaders()
                     .getFirst("X-Correlation-Id");
@@ -74,6 +83,7 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                     .header("X-User-Email", email)
                     .header("X-User-Role", role)
+                    .header("X-User-Id", userId)
                     .header("X-Correlation-Id", correlationId)
                     .build();
 

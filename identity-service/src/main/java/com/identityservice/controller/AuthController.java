@@ -1,5 +1,7 @@
 package com.identityservice.controller;
 
+import com.identityservice.dao.UserRepository;
+import com.identityservice.entity.User;
 import com.identityservice.dto.requestdto.ForgotPasswordRequestDto;
 import com.identityservice.dto.requestdto.LoginRequestDto;
 import com.identityservice.dto.requestdto.ResetPasswordRequestDto;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,6 +32,7 @@ public class AuthController {
     private final TaxpayerRegistrationService registrationService;
     private final AuthService authService;
     private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     @PostMapping("/register")
     public ResponseEntity<TaxpayerRegistrationResponseDto> register(
@@ -80,5 +84,21 @@ public class AuthController {
         String role = jwtService.extractRole(token);
         log.info("END: Token valid for email: {}", email);
         return ResponseEntity.ok(Map.of("email", email, "role", role));
+    }
+
+    /** Internal endpoint — used by other services to look up a user's role by ID */
+    @GetMapping("/users/{userId}/role")
+    public ResponseEntity<Map<String, String>> getUserRole(@PathVariable Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found: " + userId));
+        return ResponseEntity.ok(Map.of("userId", String.valueOf(userId), "role", user.getRole().name()));
+    }
+
+    /** Internal endpoint — used by taxpayer-service seeder to look up userId by email */
+    @GetMapping("/users/by-email/{email}")
+    public ResponseEntity<Map<String, Object>> getUserByEmail(@PathVariable String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("User not found: " + email));
+        return ResponseEntity.ok(Map.of("userId", user.getId(), "email", user.getEmail(), "role", user.getRole().name()));
     }
 }

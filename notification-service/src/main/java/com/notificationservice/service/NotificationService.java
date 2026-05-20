@@ -13,4 +13,7 @@ public interface NotificationService {
     NotificationResponse markAsRead(Long notificationId, Long userId);
     void broadcastNotification(String message, NotificationCategory category);
     void sendNotificationToUser(Long userId, String message, NotificationCategory category);
+    void sendDeadlineAlert(Long userId, String period, String deadlineDate);
+    void broadcastProgramUpdate(String title, String details);
+    List<NotificationResponse> getByCategory(Long userId, NotificationCategory category);
 }

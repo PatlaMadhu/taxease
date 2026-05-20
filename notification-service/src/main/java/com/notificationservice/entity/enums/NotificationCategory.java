@@ -5,5 +5,7 @@ public enum NotificationCategory {
     PAYMENT,
     COMPLIANCE,
     SYSTEM_UPDATE,
-    BROADCAST
+    BROADCAST,
+    DEADLINE_ALERT,
+    PROGRAM_UPDATE
 }

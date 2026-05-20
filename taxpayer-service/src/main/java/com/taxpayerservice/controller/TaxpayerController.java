@@ -24,7 +24,6 @@ public class TaxpayerController {
 
     private final TaxpayerService taxpayerService;
 
-    // X-User-Email injected by API Gateway from validated JWT
     @GetMapping("/profile")
     public ResponseEntity<TaxpayerProfileResponse> getProfile(
             @RequestHeader("X-User-Email") String email) {
@@ -78,11 +77,16 @@ public class TaxpayerController {
         return ResponseEntity.noContent().build();
     }
 
-    // Internal endpoint called by identity-service after registration
     @PostMapping("/internal/create")
     public ResponseEntity<TaxpayerProfileResponse> createProfile(
             @RequestBody TaxpayerRegisteredEvent event) {
         log.info("Internal: creating taxpayer profile for userId: {}", event.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(taxpayerService.createProfile(event));
     }
+
+    @GetMapping("/by-email/{email}")
+    public ResponseEntity<TaxpayerProfileResponse> getByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(taxpayerService.getProfileByEmail(email));
+    }
+
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { NotificationResponse, NotificationRequest, BroadcastRequest } from '../models/notification.model';
@@ -23,15 +23,14 @@ export class NotificationService {
   }
 
   getByUser(userId: number): Observable<NotificationResponse[]> {
-    return this.http.get<NotificationResponse[]>(`${this.base}/user/${userId}`);
+    return this.http.get<NotificationResponse[]>(`${this.base}/my`);
   }
 
   getUnread(userId: number): Observable<NotificationResponse[]> {
-    return this.http.get<NotificationResponse[]>(`${this.base}/user/${userId}/unread`);
+    return this.http.get<NotificationResponse[]>(`${this.base}/my/unread`);
   }
 
   markAsRead(notificationId: number, userId: number): Observable<string> {
-    const params = new HttpParams().set('userId', userId);
-    return this.http.put(`${this.base}/${notificationId}/read`, {}, { params, responseType: 'text' });
+    return this.http.put(`${this.base}/${notificationId}/read`, {}, { responseType: 'text' });
   }
 }
