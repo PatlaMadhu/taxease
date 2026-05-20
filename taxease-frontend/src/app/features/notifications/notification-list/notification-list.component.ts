@@ -48,7 +48,7 @@ export class NotificationListComponent implements OnInit {
   }
 
   markRead(notification: NotificationResponse): void {
-    if (notification.status === 'READ') return;
+    if (notification.status === 'READ' || notification.userId === 0) return;
     this.notificationService.markAsRead(notification.notificationId, this.userId)
       .pipe(catchError(() => of('')))
       .subscribe(() => {

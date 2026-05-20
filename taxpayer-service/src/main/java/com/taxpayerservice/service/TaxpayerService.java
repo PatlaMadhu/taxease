@@ -18,4 +18,6 @@ public interface TaxpayerService {
     DocumentResponse updateDocument(String email, Long documentId, DocumentUpdateRequest request);
     void deleteDocument(String email, Long documentId);
     TaxpayerProfileResponse createProfile(TaxpayerRegisteredEvent event);
+    DocumentResponse verifyDocument(Long documentId, String status);
+    List<DocumentResponse> getAllDocuments();
 }

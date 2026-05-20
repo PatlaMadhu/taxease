@@ -55,6 +55,10 @@ public class NotificationServiceImpl implements NotificationService {
                 .filter(n -> n.getUserId().equals(userId) || n.getUserId().equals(0L))
                 .orElseThrow(() -> new NoSuchElementException(
                         "Notification not found or does not belong to user: " + userId));
+        // Do not mutate shared broadcast records (userId=0L) — they belong to all users
+        if (notification.getUserId().equals(0L)) {
+            return toResponse(notification);
+        }
         if (notification.getStatus() == NotificationStatus.READ) {
             return toResponse(notification);
         }

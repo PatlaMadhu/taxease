@@ -8,14 +8,16 @@ export interface NotificationResponse {
   createdDate: string;
 }
 
+export type NotificationCategory = 'FILING' | 'PAYMENT' | 'COMPLIANCE' | 'SYSTEM_UPDATE' | 'BROADCAST' | 'DEADLINE_ALERT' | 'PROGRAM_UPDATE';
+
 export interface NotificationRequest {
   userId: number;
   entityId?: number;
   message: string;
-  category: 'FILING' | 'PAYMENT' | 'COMPLIANCE' | 'SYSTEM_UPDATE' | 'BROADCAST';
+  category: NotificationCategory;
 }
 
 export interface BroadcastRequest {
   message: string;
-  category: 'FILING' | 'PAYMENT' | 'COMPLIANCE' | 'SYSTEM_UPDATE' | 'BROADCAST';
+  category: NotificationCategory;
 }

@@ -22,7 +22,7 @@ const routes: Routes = [
         path: 'taxpayer',
         loadChildren: () => import('./features/taxpayer/taxpayer.module').then(m => m.TaxpayerModule),
         canActivate: [RoleGuard],
-        data: { roles: ['TAXPAYER'] }
+        data: { roles: ['TAXPAYER', 'OFFICER', 'ADMINISTRATOR', 'MANAGER'] }
       },
       {
         path: 'tax-filing',

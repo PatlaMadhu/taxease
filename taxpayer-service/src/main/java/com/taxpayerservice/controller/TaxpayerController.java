@@ -89,4 +89,16 @@ public class TaxpayerController {
         return ResponseEntity.ok(taxpayerService.getProfileByEmail(email));
     }
 
+    @GetMapping("/documents/all")
+    public ResponseEntity<List<DocumentResponse>> getAllDocuments() {
+        return ResponseEntity.ok(taxpayerService.getAllDocuments());
+    }
+
+    @PutMapping("/documents/{documentId}/verify")
+    public ResponseEntity<DocumentResponse> verifyDocument(
+            @PathVariable Long documentId,
+            @RequestParam String status) {
+        return ResponseEntity.ok(taxpayerService.verifyDocument(documentId, status));
+    }
+
 }

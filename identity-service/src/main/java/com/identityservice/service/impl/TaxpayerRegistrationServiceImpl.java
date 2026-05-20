@@ -103,9 +103,7 @@ public class TaxpayerRegistrationServiceImpl implements TaxpayerRegistrationServ
             log.info("Taxpayer profile created via REST for userId: {}", event.getUserId());
         } catch (Exception e) {
             log.warn("REST call to taxpayer-service failed, falling back to Kafka: {}", e.getMessage());
-            try { eventPublisher.publishTaxpayerRegistered(event); } catch (Exception ke) {
-                log.error("Kafka publish also failed: {}", ke.getMessage());
-            }
+            eventPublisher.publishTaxpayerRegistered(event);
         }
     }
 }

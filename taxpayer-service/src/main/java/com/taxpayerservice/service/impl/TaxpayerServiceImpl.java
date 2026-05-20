@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +94,21 @@ public class TaxpayerServiceImpl implements TaxpayerService {
         documentRepository.delete(doc);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<DocumentResponse> getAllDocuments() {
+        return documentRepository.findAllWithTaxpayer().stream().map(this::toDocResponse).toList();
+    }
+
+    @Override
+    @Transactional
+    public DocumentResponse verifyDocument(Long documentId, String status) {
+        TaxpayerDocument doc = documentRepository.findById(documentId)
+                .orElseThrow(() -> new NoSuchElementException("Document not found: " + documentId));
+        doc.setVerificationStatus(VerificationStatus.valueOf(status));
+        return toDocResponse(documentRepository.save(doc));
+    }
+
     private Taxpayer findByEmail(String email) {
         return taxpayerRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("Taxpayer not found for email: " + email));
@@ -107,11 +123,13 @@ public class TaxpayerServiceImpl implements TaxpayerService {
         TaxpayerType type = Arrays.stream(TaxpayerType.values())
                 .filter(t -> t.name().equalsIgnoreCase(event.getTaxpayerType()))
                 .findFirst().orElse(TaxpayerType.Citizen);
+        String taxId = "TXN" + UUID.randomUUID().toString().replace("-", "").substring(0, 9).toUpperCase();
         Taxpayer taxpayer = Taxpayer.builder()
                 .userId(event.getUserId())
                 .name(event.getName())
                 .email(event.getEmail())
                 .phone(event.getPhone())
+                .taxpayerIdNumber(taxId)
                 .type(type)
                 .address(event.getAddress())
                 .contactInfo(event.getContactInfo())

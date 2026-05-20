@@ -10,7 +10,7 @@ public class UserRoleClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private static final String IDENTITY_URL = "http://localhost:8080/api/auth/users/{userId}/role";
+    private static final String IDENTITY_URL = "http://localhost:8082/api/auth/users/{userId}/role";
 
     public String getUserRole(Long userId) {
         try {

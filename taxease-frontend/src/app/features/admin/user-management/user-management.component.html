@@ -42,14 +42,23 @@
       <mat-card-content>
         <form [formGroup]="directForm" (ngSubmit)="sendDirect()">
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>User ID</mat-label>
-            <input matInput formControlName="userId" type="number">
-            <mat-error *ngIf="directForm.get('userId')?.hasError('required')">User ID is required</mat-error>
+            <mat-label>Taxpayer Email</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="e.g. rahul.sharma@gmail.com">
+            <mat-error *ngIf="directForm.get('email')?.touched && directForm.get('email')?.hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="directForm.get('email')?.touched && directForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
           </mat-form-field>
+          <button mat-stroked-button color="primary" type="button" (click)="lookupTaxpayer()" [disabled]="lookingUp || !directForm.get('email')?.valid" style="margin-bottom:12px;width:100%">
+            <mat-icon>search</mat-icon> {{ lookingUp ? 'Looking up…' : 'Lookup Taxpayer' }}
+          </button>
+          <div *ngIf="lookupError" style="color:red;margin-bottom:8px;font-size:13px">{{ lookupError }}</div>
+          <div *ngIf="resolvedUserId" style="color:green;margin-bottom:12px;font-size:13px">
+            <mat-icon style="font-size:16px;vertical-align:middle">check_circle</mat-icon>
+            Taxpayer found — User ID: {{ resolvedUserId }}
+          </div>
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Message</mat-label>
             <textarea matInput formControlName="message" rows="3" placeholder="Enter message…"></textarea>
-            <mat-error *ngIf="directForm.get('message')?.hasError('required')">Message is required</mat-error>
+            <mat-error *ngIf="directForm.get('message')?.touched && directForm.get('message')?.hasError('required')">Message is required</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Category</mat-label>
@@ -57,7 +66,7 @@
               <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
             </mat-select>
           </mat-form-field>
-          <button mat-raised-button color="accent" type="submit" [disabled]="sending" class="full-width">
+          <button mat-raised-button color="accent" type="submit" [disabled]="sending || !resolvedUserId" class="full-width">
             <mat-icon>send</mat-icon> Send to User
           </button>
         </form>

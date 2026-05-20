@@ -83,6 +83,26 @@ public class NotificationDataSeeder implements CommandLineRunner {
         save(12L, null, "Reminder: Business tax filing for period 2024-25 is due on 31st October 2025.",
                 NotificationCategory.DEADLINE_ALERT, NotificationStatus.UNREAD);
 
+        // --- INTERNAL STAFF (userId=1..9) ---
+        save(1L, null, "System report: All services are running normally. Monthly audit summary is ready.",
+                NotificationCategory.SYSTEM_UPDATE, NotificationStatus.UNREAD);
+        save(2L, null, "You have 3 pending tax filings awaiting review and approval.",
+                NotificationCategory.FILING, NotificationStatus.UNREAD);
+        save(3L, null, "You have 2 submitted filings pending your review.",
+                NotificationCategory.FILING, NotificationStatus.UNREAD);
+        save(4L, null, "Monthly revenue report for December 2024 is now available.",
+                NotificationCategory.SYSTEM_UPDATE, NotificationStatus.UNREAD);
+        save(5L, null, "Q3 financial summary has been generated. Please review.",
+                NotificationCategory.SYSTEM_UPDATE, NotificationStatus.UNREAD);
+        save(6L, null, "Compliance review for FY 2024-25 is due. 5 cases require attention.",
+                NotificationCategory.COMPLIANCE, NotificationStatus.UNREAD);
+        save(7L, null, "Non-compliance alert: 2 taxpayers have overdue filings.",
+                NotificationCategory.COMPLIANCE, NotificationStatus.UNREAD);
+        save(8L, null, "Audit case #3 has been escalated and requires your immediate review.",
+                NotificationCategory.COMPLIANCE, NotificationStatus.UNREAD);
+        save(9L, null, "Audit case #5 has been assigned to you for review.",
+                NotificationCategory.COMPLIANCE, NotificationStatus.UNREAD);
+
         // --- SNEHA REDDY (userId=13) ---
         save(13L, 9L, "Your tax filing #9 for period 2023-24 has been submitted successfully.",
                 NotificationCategory.FILING, NotificationStatus.READ);

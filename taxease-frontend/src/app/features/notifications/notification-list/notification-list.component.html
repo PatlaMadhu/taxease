@@ -33,7 +33,8 @@
               <span class="notif-date">{{ n.createdDate | date:'medium' }}</span>
             </div>
           </div>
-          <mat-chip *ngIf="n.status === 'UNREAD'" class="unread-badge">New</mat-chip>
+          <mat-chip *ngIf="n.status === 'UNREAD' && n.userId !== 0" class="unread-badge">New</mat-chip>
+          <mat-chip *ngIf="n.userId === 0" class="broadcast-badge">Broadcast</mat-chip>
         </div>
       </mat-card-content>
     </mat-card>

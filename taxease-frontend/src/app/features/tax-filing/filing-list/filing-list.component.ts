@@ -16,7 +16,8 @@ import { ToastService } from '../../../core/services/toast.service';
 })
 export class FilingListComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<FilingResponse>();
-  displayedColumns = ['filingId', 'period', 'amountDeclared', 'status', 'submittedDate'];
+  displayedColumns = ['filingId', 'period', 'amountDeclared', 'status', 'submittedDate', 'actions'];
+  officerColumns   = ['filingId', 'period', 'amountDeclared', 'status', 'submittedDate', 'actions'];
   loading = true;
   isOfficer = false;
   statuses: FilingStatus[] = ['DRAFT','PENDING','SUBMITTED','APPROVED','REJECTED','ACTIVE','INACTIVE'];

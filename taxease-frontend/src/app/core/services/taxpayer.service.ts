@@ -10,6 +10,10 @@ export class TaxpayerService {
 
   constructor(private http: HttpClient) {}
 
+  getProfileByEmail(email: string): Observable<TaxpayerProfile> {
+    return this.http.get<TaxpayerProfile>(`${this.base}/by-email/${email}`);
+  }
+
   getProfile(): Observable<TaxpayerProfile> {
     return this.http.get<TaxpayerProfile>(`${this.base}/profile`);
   }
@@ -20,6 +24,14 @@ export class TaxpayerService {
 
   updateProfile(payload: UpdateProfileRequest): Observable<TaxpayerProfile> {
     return this.http.put<TaxpayerProfile>(`${this.base}/profile`, payload);
+  }
+
+  getAllDocuments(): Observable<TaxpayerDocument[]> {
+    return this.http.get<TaxpayerDocument[]>(`${this.base}/documents/all`);
+  }
+
+  verifyDocument(documentId: number, status: string): Observable<TaxpayerDocument> {
+    return this.http.put<TaxpayerDocument>(`${this.base}/documents/${documentId}/verify`, {}, { params: { status } });
   }
 
   getDocuments(): Observable<TaxpayerDocument[]> {

@@ -52,11 +52,33 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Submitted</th>
           <td mat-cell *matCellDef="let f">{{ f.submittedDate ? (f.submittedDate | date:'mediumDate') : '—' }}</td>
         </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let f">
+            <ng-container *ngIf="isOfficer">
+              <ng-container *ngIf="f.status === 'SUBMITTED'">
+                <button mat-icon-button color="primary" title="Approve" (click)="updateStatus(f, 'APPROVED')">
+                  <mat-icon>check_circle</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" title="Reject" (click)="updateStatus(f, 'REJECTED')">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </ng-container>
+              <span *ngIf="f.status !== 'SUBMITTED'" class="status-badge" [ngClass]="'status-' + f.status.toLowerCase()">{{ f.status }}</span>
+            </ng-container>
+            <ng-container *ngIf="!isOfficer">
+              <button mat-raised-button color="primary" *ngIf="f.status === 'APPROVED'"
+                [routerLink]="['/payment/pay', f.filingId]">
+                <mat-icon>payment</mat-icon> Pay Now
+              </button>
+            </ng-container>
+          </td>
+        </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="isOfficer ? officerColumns : displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: isOfficer ? officerColumns : displayedColumns"></tr>
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell empty-msg" [attr.colspan]="displayedColumns.length">No filings found.</td>
+          <td class="mat-cell empty-msg" [attr.colspan]="officerColumns.length">No filings found.</td>
         </tr>
       </table>
 

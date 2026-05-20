@@ -40,18 +40,22 @@ export class TaxpayerDashboardComponent implements OnInit {
     this.loading = true;
     this.error = false;
     this.profileCache.getProfile().pipe(
-      catchError(() => { this.error = true; this.loading = false; this.cdr.markForCheck(); return of(null); }),
       switchMap(profile => {
-        if (!profile) { this.loading = false; this.cdr.markForCheck(); return of({ filings: [], payments: [] }); }
         this.profile = profile;
         return forkJoin({
           filings: this.filingService.getFilingsByTaxpayer(profile.taxpayerId).pipe(catchError(() => of([]))),
           payments: this.paymentService.getPaymentHistory(profile.taxpayerId).pipe(catchError(() => of([])))
         });
+      }),
+      catchError(() => {
+        this.error = true;
+        this.loading = false;
+        this.cdr.markForCheck();
+        return of({ filings: [], payments: [] });
       })
     ).subscribe(({ filings, payments }) => {
-      this.filings = filings;
-      this.payments = payments;
+      this.filings = filings as FilingResponse[];
+      this.payments = payments as PaymentResponse[];
       this.loading = false;
       this.cdr.markForCheck();
     });

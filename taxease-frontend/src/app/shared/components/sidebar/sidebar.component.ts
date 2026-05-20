@@ -17,7 +17,8 @@ export class SidebarComponent implements OnInit {
   navItems: NavItem[] = [
     { label: 'Dashboard',     icon: 'dashboard',            route: '/dashboard',          roles: ['TAXPAYER','OFFICER','ADMINISTRATOR','MANAGER','COMPLIANCE','AUDITOR'] },
     { label: 'My Profile',    icon: 'person',               route: '/taxpayer/profile',   roles: ['TAXPAYER'] },
-    { label: 'My Documents',  icon: 'folder',               route: '/taxpayer/documents', roles: ['TAXPAYER'] },
+    { label: 'My Documents',  icon: 'folder',               route: '/taxpayer/documents',       roles: ['TAXPAYER'] },
+    { label: 'Document Review', icon: 'fact_check',           route: '/taxpayer/document-review', roles: ['OFFICER','ADMINISTRATOR','MANAGER'] },
     { label: 'Tax Filings',   icon: 'description',          route: '/tax-filing',         roles: ['TAXPAYER','OFFICER','ADMINISTRATOR','MANAGER'] },
     { label: 'Payments',      icon: 'payment',              route: '/payment',            roles: ['TAXPAYER','OFFICER','ADMINISTRATOR','MANAGER'] },
     { label: 'Audit Cases',   icon: 'gavel',                route: '/audit',              roles: ['OFFICER','ADMINISTRATOR','COMPLIANCE','AUDITOR'] },
