@@ -89,15 +89,17 @@ public class TaxpayerController {
         return ResponseEntity.ok(taxpayerService.getProfileByEmail(email));
     }
 
-    @GetMapping("/documents/all")
+    @GetMapping("/officer/documents")
     public ResponseEntity<List<DocumentResponse>> getAllDocuments() {
+        log.info("Fetching all documents for officer review");
         return ResponseEntity.ok(taxpayerService.getAllDocuments());
     }
 
-    @PutMapping("/documents/{documentId}/verify")
+    @PutMapping("/officer/documents/{documentId}/verify")
     public ResponseEntity<DocumentResponse> verifyDocument(
             @PathVariable Long documentId,
             @RequestParam String status) {
+        log.info("Verifying document {} with status {}", documentId, status);
         return ResponseEntity.ok(taxpayerService.verifyDocument(documentId, status));
     }
 

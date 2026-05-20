@@ -22,7 +22,7 @@ public class TaxpayerDocument {
     @Column(name = "document_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "taxpayer_id", nullable = false)
     private Taxpayer taxpayer;
 

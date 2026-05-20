@@ -27,11 +27,11 @@ export class TaxpayerService {
   }
 
   getAllDocuments(): Observable<TaxpayerDocument[]> {
-    return this.http.get<TaxpayerDocument[]>(`${this.base}/documents/all`);
+    return this.http.get<TaxpayerDocument[]>(`${this.base}/officer/documents`);
   }
 
   verifyDocument(documentId: number, status: string): Observable<TaxpayerDocument> {
-    return this.http.put<TaxpayerDocument>(`${this.base}/documents/${documentId}/verify`, {}, { params: { status } });
+    return this.http.put<TaxpayerDocument>(`${this.base}/officer/documents/${documentId}/verify`, {}, { params: { status } });
   }
 
   getDocuments(): Observable<TaxpayerDocument[]> {

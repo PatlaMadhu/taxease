@@ -95,9 +95,8 @@ public class TaxpayerServiceImpl implements TaxpayerService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<DocumentResponse> getAllDocuments() {
-        return documentRepository.findAllWithTaxpayer().stream().map(this::toDocResponse).toList();
+        return documentRepository.findAll().stream().map(this::toDocResponse).toList();
     }
 
     @Override
